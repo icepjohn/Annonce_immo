@@ -10,17 +10,24 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\User;
+use AppBundle\Form\UserType;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Config\Definition\Exception\Exception;
-use UserType;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * Class DefaultController
+ * @package AdminBundle\Controller
+ * @Route("/admin/user")
+ */
 
 class AdminController extends Controller
 {
 
     /**
-     * @Route("/admin")
+     * @Route("/admin", name="admin_user_home")
      */
     public function indexAction()
     {
@@ -30,20 +37,16 @@ class AdminController extends Controller
 
     /**
      *
-     * @Route("/formulaire/{id}", name="admin_user_edit")
-     * @Route("/formulaire", name="admin_user_new")
+     * @Route("/inscription", name="admin_user_new")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
 
-    public function formAction(Request $request, $id = null)
+    public function formAction(Request $request)
     {
 
         $user = new User();
 
-        if ($id != null) {
-            $repo = $this->getDoctrine()->getRepository('AppBundle:User');
-
-            $user = $repo->findOneById($id);
-        }
 
         $form = $this->createForm(
             UserType::class,
@@ -72,7 +75,7 @@ class AdminController extends Controller
                 $this->addFlash('danger', 'Cette identifiant existe déja!!!');
             }
         }
-        return $this->render('AppBundle:Recherche:recherche.html.twig', [
+        return $this->render('AppBundle:Admin:inscription.html.twig', [
             "userForm" => $form->createView()
         ]);
     }

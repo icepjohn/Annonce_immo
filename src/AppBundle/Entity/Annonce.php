@@ -94,4 +94,3 @@ class Annonce
         return $this->codePostal;
     }
 }
-
